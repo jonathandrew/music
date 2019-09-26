@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <div class="check"></div>
+    <h1>drew website</h1>
+
+    <form id="form">
+      Artist: <input type="text" id="artistName" name="fname" /><br />
+      <input type="submit" value="submit" id="submit" />
+    </form>
+
+    <div id="song">
+      <div class="placeHolder"></div>
+    </div>
+
+    <script>
+      document.getElementById("form").addEventListener("submit", myFunction);
+
+      function myFunction(evt) {
+        evt.preventDefault();
+
+        let artist = document.getElementById("artistName").value;
+        // let bucket = document.getElementsByClassName("PlaceHolder");
+        // let li = document.createElement("li");
+        // bucket.appendChild(li);
+        // console.log("artist ", artist);
+        // card.appendChild("li");
+        let language = new XMLHttpRequest(); /* https means the language spoken between you and the waiter(api) */
+        // todo
+        // 1. get input value done
+        // 2. add artist name to the url
+        let wordsCommingFromMyMouth = `https://www.songsterr.com/a/ra/songs/byartists.json?artists=${artist}`;
+        /* url means the actual link to the site which is what you are specifically asking for to the api(waiter)*/
+        console.log("url = ", wordsCommingFromMyMouth);
+
+        language.open(
+          `GET`,
+          wordsCommingFromMyMouth,
+          true
+        ); /* once waiter(api) understands the task, he will begin it with opening the request. in this case he needs to GET what is coming from my mouth */
+        language.send(); /* once the task is open you need to send him to actually do the task which translates to the action.*/
+        language.onreadystatechange = function() {
+          console.log("this.readyState = ", this.readyState);
+
+          /* while hes doing his task he will check if its available and then if he can actually bring it back */
+          if (this.readyState === 4 && this.status === 200) {
+            let realItem = this
+              .responseText; /* he returns the REAL item as a responseText which is not what i said but the actual item */
+            console.log(
+              JSON.parse(realItem)
+            ); /* i got the item that i asked for now i am putting it inside a box so that i can do whatever i want with it. */
+
+            let parsedObj = JSON.parse(realItem);
+            for (let i = 0; i < 10; i++) {
+              document.getElementById("song").innerText =
+                document.getElementById("song").innerText +
+                "\n" +
+                parsedObj[i].title;
+            }
+          } else if (this.status === 404) {
+            /* if i dont have the item i asked for then do another action where it replies with console.loh */
+            console.log("item not found");
+          }
+        };
+      }
+    </script>
+  </body>
+</html>
